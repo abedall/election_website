@@ -11,21 +11,35 @@ The domain for the election represents some key concepts:
 - _**votes**_ the number of votes gained by a party in a constituency
 - _**share**_ the % share of the total votes the party received
 
-### API
-The API has 3 endpoints:
-- GET `/` serves the index.html file.
-- GET `/result/{id}` to get an elections result for a given id.
-- GET `/scoreboard` to get the running totals. This is unimplemented.
+Endpoints (server.py)
+GET /
 
-### Task
-Display the election results in the resources folder to the user. The election results are stored in ./resources/sample-election-results folder. The minimum information to display is each constituency's name, and which party had the majority vote for that constituency.
+Description: Serves the homepage allowing users to choose between "Show All Results" or "Show Results for a Constituency ID."
+GET /result
 
-A random constituency's results is changed every 5 to 10 seconds, the new results will be stored by the same name in the ./resources/updated-election-results folder. The information displayed to the user has to be updated accordingly with the ones on the server.
+Description: Displays results for a specific constituency by its ID. It renders the result_id.html page where users can input a constituency ID.
+GET /scoreboard
 
-- You can use whichever javascript library you'd like (as long as it's actually needed.)
-- Do not change the updater.py file.
-- You can change the main.py file as long as you don't change it's current functionality.
-- You can change anything else (Like the API end points, or create new python files.)
+Description: Displays the scoreboard of all constituencies’ results in an HTML template (constituencies.html). Calls /all_result to retrieve data.
+GET /all_result
+
+Description: Fetches all constituency results in JSON format. Displays the constituency ID, name, and the winning party for each.
+GET /constituency/<constituency_id>
+
+Description: Fetches and displays results for a specific constituency using the constituency_id. If the ID is invalid, it returns a 404 error.
+Main Functions
+display_constituency_results_id() (server.py):
+
+Loops over all election result files and retrieves the constituency ID, name, and winning party.
+get_winning_party(constituency) (server.py):
+
+Determines the party with the most votes in a given constituency.
+constituency(constituency_id) (server.py):
+
+Retrieves election results for a specific constituency ID. If not found, it returns a 404 error.
+Updater.exec() (updater.py)​(updater):
+
+Periodically updates election results by randomly selecting a constituency and modifying its vote count. This update is then saved to the ./resources/updated-election-results folder.
 
 ## Prerequisites
 - python 3.9 or higher
