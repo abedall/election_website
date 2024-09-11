@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Election Results</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+      .table-hover tbody tr:hover td,
+      .table-hover tbody tr:hover th {
+        background-color: #f5f5f5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="text-center">Election Results</h1>
+       <div class="form-group">
+        <label for="constituency-id">Search by Constituency ID:</label>
+        <div class="input-group">
+          <input type="text" class="form-control" id="constituency-id" placeholder="Enter ID">
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button" onclick="searchResults()">Search</button>
+          </span>
+        </div>
+       </div>
+      <div id="results-table"></div>
+    </div>
+    <script>
+         function searchResults() {
+
+                const constituencyId = document.getElementById("constituency-id").value;
+                // Make an AJAX request to your Flask API with the entered constituency ID
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", "/constituency/" + constituencyId);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        // Update the results section with the API response
+                        document.getElementById("results-table").innerHTML = xhr.responseText;
+                    } else {
+                        alert("Error: " + xhr.statusText);
+                    }
+                };
+                xhr.send();
+
+		 }
+
+
+
+
+
+
+      function displayResults(results) {
+        const table = `
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Party</th>
+                <th>Votes</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${results.map(result => `
+                <tr>
+                  <td>${result.party}</td>
+                  <td>${result.votes}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        `;
+        document.getElementById("results-table").innerHTML = table;
+      }
+    </script>
+  </body>
+</html>

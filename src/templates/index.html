@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Election Results Home Page</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+		}
+		h1 {
+			text-align: center;
+			margin: 50px 0;
+		}
+		p {
+			text-align: center;
+		}
+		button {
+			display: block;
+			margin: 0 auto;
+			padding: 10px 20px;
+			border: none;
+			border-radius: 5px;
+			background-color: #4CAF50;
+			color: white;
+			font-size: 16px;
+			cursor: pointer;
+		}
+		button:hover {
+			background-color: #3e8e41;
+		}
+	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$("#show_all").click(function(){
+				window.location.href = "/scoreboard";
+			});
+
+			$("#show_by_id").click(function(){
+				window.location.href = "/result";
+			});
+		});
+	</script>
+</head>
+<body>
+	<h1>Welcome to the Election Results Home Page</h1>
+	<p>Please choose one of the following options:</p>
+	<button id="show_all">Show All Results</button>
+	<button id="show_by_id">Show Results for a Constituency ID</button>
+</body>
+</html>

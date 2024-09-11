@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Constituency Results</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+            cursor: pointer;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+        .asc:after {
+            content: ' ▴';
+        }
+        .desc:after {
+            content: ' ▾';
+        }
+        #refresh {
+            margin-top: 20px;
+            padding: 10px 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+            var results = {{ results | tojson }};
+            var sortField = null;
+            var sortOrder = null;
+
+            // Sort the results based on the specified field and order
+            function sortResults(field, order) {
+                results.sort(function(a, b) {
+                    if (a[field] < b[field]) {
+                        return order == 'asc' ? -1 : 1;
+                    } else if (a[field] > b[field]) {
+                        return order == 'asc' ? 1 : -1;
+                    } else {
+                        return 0;
+                    }
+                });
+            }
+
+            // Build the HTML for the results
+            function buildResults() {
+                var html = '';
+                for (var i = 0; i < results.length; i++) {
+                    var result = results[i];
+                    html += '<tr><td>' + result.constituency + '</td><td>' + result.winning_party + '</td></tr>';
+                }
+                $('#results tbody').html(html);
+            }
+
+            // Sort the results when the user clicks a column header
+            $('th').click(function() {
+                var field = $(this).data('field');
+                var order = sortOrder == 'asc' ? 'desc' : 'asc';
+                sortResults(field, order);
+                sortOrder = order;
+                sortField = field;
+                $('th').removeClass('asc desc');
+                $(this).addClass(order);
+                buildResults();
+            });
+
+            // Sort the results initially by the first column in ascending order
+            sortResults('constituency', 'asc');
+            sortOrder = 'asc';
+            sortField = 'constituency';
+            $('th[data-field="' + sortField + '"]').addClass(sortOrder);
+
+            // Build the HTML for the results and add it to the table
+            buildResults();
+
+            // Reload the page when the user clicks the "Refresh" button
+            $('#refresh').click(function() {
+                location.reload();
+            });
+        });
+    </script>
+</head>
+<body>
+    <table id="results">
+        <thead>
+            <tr>
+                <th data-field="constituency">Constituency</th>
+                <th data-field="winning_party">Winning Party</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <div id="refresh">Refresh</div>
+</body>
+</html>
